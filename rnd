@@ -1,0 +1,71 @@
+from pygame import*
+from random import choice
+font.init()
+window = display.set_mode((600,600))
+class Card():
+    def __init__(self,x, y, width, height):
+        self.frame=Rect(x, y, width, height)
+        self.internal=Rect(x+15,y+15, width-30,height-30)
+        self.color=(0, 0, 0)
+    def draw(self):
+        draw.rect(window,(176, 182, 190),self.frame)
+        draw.rect(window,self.color,self.internal)
+class Text():
+    def __init__(self,click,size,color):
+        font1=font.Font('ITCBLKAD.TTF',size)
+        self.image=font1.render(click,True,color)
+    def draw(self,card):
+        window.blit(self.image,(card.frame.x+15,card.frame.y+75))
+NAD=Text('click',45,(255, 255, 255))
+NADschet=Text('score',70,(255, 255, 255))
+NADnum=Text('0',70,(255, 255, 255))
+NADWIN=Text('You win',150,(255, 255, 255))
+
+
+card1=Card(50,200,100,200)
+card2=Card(190,200,100,200)
+card3=Card(330,200,100,200)
+card4=Card(470,200,100,200)
+cart=list((card1,card2,card3,card4))
+
+timer=0
+
+
+game = True
+clock = time.Clock()
+schet=0
+while game:
+    for ivent in event.get():
+        if ivent.type==QUIT:
+            game=False
+        if ivent.type==MOUSEBUTTONDOWN and ivent.button == 1:
+            x,y = ivent.pos
+            for card in cart:
+                card.color=(0, 0, 0)
+                if card.internal.collidepoint(x,y):
+                    if card==TKC:
+                        schet+= 1
+                        NADnum = Text(str(schet), 70, (255, 255, 255))
+                        card.color=(1,130,3)
+                    else:
+                        schet-=1
+                        NADnum = Text(str(schet), 70, (255, 255, 255))
+                        card.color=(200,1,3)
+    window.fill((2, 0, 167))
+    if schet>=30:
+        window.blit(NADWIN.image,(60,250))
+    else:
+        if timer==0:
+            TKC=choice(cart)
+            timer=20
+        else:
+            timer-=1
+        for card in cart:
+            card.draw()
+        window.blit(NADschet.image,(330,40))
+        window.blit(NADnum.image,(450,40))
+        NAD.draw(TKC)
+    display.update()
+    clock.tick(40)
+
+
